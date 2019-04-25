@@ -5,6 +5,7 @@ const jwtAuth = require('../../lib');
 const config = require('../../config');
 const enforceContentType = require('enforce-content-type');
 const fs = require('fs');
+const createJob = require('../../utils').createJob;
 
 const router = new express.Router();
 const publicKey = fs.readFileSync('config/jwtRS256.key.pub');
@@ -23,15 +24,25 @@ const prepData = (data) => {
 
 router.post('/create', (req, res) => {
   const body = req.body;
-  const preppedData = prepData(body)
-  const job = new Job(preppedData);
-  job.save((err) => {
+  // const preppedData = prepData(body)
+  // const job = new Job(preppedData);
+  const resp = createJob(body.profile, body.job);
+  console.log(resp)
+  if (resp) {
+    const job = new Job(resp);
+    job.save((err) => {
+      console.log('err', err);
       if (err) {
-        res.status(500).send(err);
+        res.status(500).json(err);
       } else {
         res.json({ success: true });
       }
     });
+  } else {
+    console.log('jobd')
+    res.status(500).json({success: false, message: 'Invalid job type/subtype'});
+  }
+  
 });
 
 router.patch('/update', (req, res) => {

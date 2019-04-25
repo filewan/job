@@ -9,13 +9,14 @@ module.exports =mongoose.model('Job', new Schema({
   sub_type: {type: String},
   stages:[{name: String, owner: String, status: String, comment: [String], callcount: {type: Number, default: null}}],
   history:[{name: String, owner: String, status: String}],
-  profile: {type: [{name: {type: String, index: true}, pan: {type:String, index: true}}], default: null},
+  profile: {type: [{name: {type: String, index: true}, pan: {type:String, index: true}, phone: Number}], default: null},
   currentStage: {
     stage: Number, 
     data: {
       name: String, 
       owner: {type:String, index:true},
-      status: {type:String, index:true}
+      status: {type:String, index:true},
+      due: Date
     }
   },
   documents:[{
